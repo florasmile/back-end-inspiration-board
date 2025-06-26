@@ -10,18 +10,22 @@ class Board(db.Model):
 # So SQLAlchemy handle the table vs. manually
     __tablename__ = "board"
 
-    board_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     title: Mapped[str] = mapped_column(nullable=False)
     owner: Mapped[str] = mapped_column(nullable=False)
     cards: Mapped[List["Card"]] = relationship(back_populates="board", cascade="all, delete")
 
-
     def to_dict(self):
         return { 
-            "board_id" : self.board_id,
+            "id" : self.id,
             "title": self.title,
             "owner": self.owner
-        } 
+        }
+    
+    def to_dict_with_cards(self):
+        board_dict = self.to_dict()
+        board_dict["cards"] = [card.to_dict() for card in self.cards]
+        return board_dict 
 
     @classmethod
     def from_dict(cls, dict_data_board):
