@@ -20,7 +20,7 @@ class Card(db.Model):
     @validates("message")
     def validate_message(self, key, message):
         if len(message) > 40:
-            raise ValueError("The message fild shoudn't be grater than 40 characters")
+            raise ValueError("The message field shouldn't be greater than 40 characters")
         return message
 
     def to_dict(self):

@@ -1,12 +1,10 @@
-from flask import Blueprint, request, Response
+from flask import Blueprint, request, Response, jsonify
 from app.models.board import Board
 from app.models.card import Card
 from app.routes.helpers import validate_model, create_model
-
 from ..db import db
 
 bp = Blueprint("board_bp", __name__, url_prefix="/boards")
-
 
 @bp.post("")
 def create_board():
@@ -30,7 +28,8 @@ def get_all_boards():
 @bp.get("/<board_id>")
 def get_one_board(board_id):
     board = validate_model(Board, board_id)
-    return {"board": board.to_dict()}
+
+    return jsonify({"board": board.to_dict()})
 
 
 @bp.put("/<board_id>")
@@ -52,24 +51,73 @@ def delete_board(board_id):
 
     return Response(status=204, mimetype="application/json")
 
-#? need to figure out : should it update exist card or create a new one 
-@bp.post("/<board_id>/cards")
-def create_card_for_board(board_id):
-    board = validate_model(Board, board_id)
-    request_body = request.get_json()
-    card_ids = request_body.get("card_ids")
-
-    cards = []
-    for card_id in card_ids:
-        card = validate_model(Card, card_id)
-        cards.append(card)
-    board.cards = cards
-    db.session.commit()
-
-    return {"id": board.id, "task_ids": card_ids}
-
 
 @bp.get("/<board_id>/cards")
 def get_cards_by_board(board_id):
     board = validate_model(Board, board_id)
+
     return board.to_dict_with_cards()
+
+# get all boards with their cards
+@bp.get("/with-cards")
+def get_all_boards_with_cards():
+    query = db.select(Board).order_by(Board.id)
+    boards = db.session.scalars(query).all()
+
+    boards_with_cards = [board.to_dict_with_cards() for board in boards]
+
+    return boards_with_cards, 200
+
+
+@bp.post("/<board_id>/cards")
+def create_card_for_board(board_id):
+    validate_model(Board, board_id)
+    request_body = request.get_json()
+    request_body["board_id"] = int(board_id)
+
+    return create_model(Card, request_body)
+
+
+#reassign a card from one board to another
+@bp.post("/<board_id>/cards/assign")
+def reassign_cards_to_board(board_id):
+    board = validate_model(Board, board_id)
+    request_body = request.get_json()
+    card_ids = request_body.get("card_ids")
+
+    if not card_ids or not isinstance(card_ids, list):
+        return {"message": "Request must include a list of card_ids"}, 400
+
+    updated_cards = []
+    for card_id in card_ids:
+        card = validate_model(Card, card_id)
+        previous_board = card.board_id
+        card.board_id = board.id 
+        updated_cards.append({
+            "card_id": card.id,
+            "from_board": previous_board,
+            "to_board": board.id
+        })
+
+    db.session.commit()
+
+    return {
+        "message": f"Moved {len(updated_cards)} card(s) to board {board.id}",
+        "reassigned_cards": updated_cards
+    }, 200
+
+
+#updating a single card 
+@bp.put("/<board_id>/cards/<card_id>")
+def update_card_on_board(board_id, card_id):
+    board = validate_model(Board, board_id)
+    card = validate_model(Card, card_id)
+
+    if card.board_id != board.id:
+        return {"message": f"Card {card.id} does not belong to Board {board.id}"}, 400
+
+    request_body = request.get_json()
+    card.update_from_dict(request_body)
+
+    db.session.commit()
+    return card.to_dict(), 200
