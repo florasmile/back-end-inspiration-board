@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 from sqlalchemy import Integer, String, ForeignKey, DateTime
 from datetime import datetime
 from typing import TYPE_CHECKING
@@ -11,15 +11,21 @@ class Card(db.Model):
     # So SQLAlchemy handle the table vs. manually
     __tablename__ = "card"
 
-    card_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     message: Mapped[str] = mapped_column(String(40), nullable=False)
     likes_count: Mapped[int] = mapped_column(Integer, default=0)
-    board_id: Mapped[int] = mapped_column(ForeignKey("board.board_id"), nullable=False)
+    board_id: Mapped[int] = mapped_column(ForeignKey("board.id"))
     board: Mapped["Board"] = relationship(back_populates="cards")
+
+    @validates("message")
+    def validate_message(self, key, message):
+        if len(message) > 40:
+            raise ValueError("The message fild shoudn't be grater than 40 characters")
+        return message
 
     def to_dict(self):
         return {
-            "card_id": self.card_id,
+            "id": self.id,
             "message": self.message,
             "likes_count": self.likes_count,
             "board_id": self.board_id

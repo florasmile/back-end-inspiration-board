@@ -54,9 +54,9 @@ def one_card(app):
 @pytest.fixture
 def three_cards(app, one_board):
     db.session.add_all([
-        Card(message="Keep going 💪", likes_count=0, board_id=1),
-        Card(message="You matter ❤️", likes_count=2, board_id=1),
-        Card(message="Stay curious 🤓", likes_count=1, board_id=1)
+        Card(message="Keep going", likes_count=0, board_id=1),
+        Card(message="You matter", likes_count=2, board_id=1),
+        Card(message="Stay curious", likes_count=1, board_id=1)
     ])
     db.session.commit()
 
