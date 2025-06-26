@@ -76,3 +76,19 @@ def one_card_belongs_to_one_board(app, one_board, one_card):
     card = db.session.get(Card, 1)
     board.cards.append(card)
     db.session.commit()
+
+
+@pytest.fixture
+def one_board_one_card(app):
+    board = Board(title="Test", owner="Tester")
+    db.session.add(board)
+    db.session.commit()
+
+    card = Card(message="Sample Card", board_id=board.id)
+    db.session.add(card)
+    db.session.commit()
+
+    return {"board_id": board.id}
+
+
+

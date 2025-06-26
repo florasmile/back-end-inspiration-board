@@ -13,6 +13,12 @@ def get_one_card(card_id):
 
     return jsonify({"cards": card.to_dict()})
 
+#get all cards assign for board from the cards site
+@bp.get("/boards/<board_id>/cards")
+def get_cards_for_board(board_id):
+    board = validate_model(Board, board_id)
+    return board.to_dict_with_cards()["cards"]
+
 
 @bp.delete("/<card_id>")
 def delete_card(card_id):

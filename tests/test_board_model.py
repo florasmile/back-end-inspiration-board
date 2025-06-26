@@ -11,7 +11,7 @@ def test_create_board_from_dict(app):
     db.session.commit()
 
     # Assert
-    assert board.board_id is not None
+    assert board.id is not None
     assert board.title == "Inspiration Board"
     assert board.owner == "Ada"
 
@@ -26,7 +26,7 @@ def test_board_to_dict(app):
 
     # Assert
     assert board_dict == {
-        "board_id": board.board_id,
+        "id": board.id,
         "title": "Dev Board",
         "owner": "Tatyana"
     }

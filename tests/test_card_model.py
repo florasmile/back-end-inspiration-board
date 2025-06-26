@@ -10,7 +10,7 @@ def test_create_card_from_dict(app):
 
     card_data = {
         "message": "Be kind to yourself",
-        "board_id": board.board_id,
+        "board_id": board.id,
         "likes_count": 2
     }
 
@@ -20,9 +20,9 @@ def test_create_card_from_dict(app):
     db.session.commit()
 
     # Assert
-    assert card.card_id is not None
+    assert card.id is not None
     assert card.message == "Be kind to yourself"
-    assert card.board_id == board.board_id
+    assert card.id == board.id
     assert card.likes_count == 2
 
 def test_card_to_dict(app):
@@ -31,7 +31,7 @@ def test_card_to_dict(app):
     db.session.add(board)
     db.session.commit()
 
-    card = Card(message="Keep going", board_id=board.board_id, likes_count=1)
+    card = Card(message="Keep going", board_id=board.id, likes_count=1)
     db.session.add(card)
     db.session.commit()
 
@@ -40,10 +40,10 @@ def test_card_to_dict(app):
 
     # Assert
     assert card_dict == {
-        "card_id": card.card_id,
+        "id": card.id,
         "message": "Keep going",
         "likes_count": 1,
-        "board_id": board.board_id
+        "board_id": board.id
     }
 
 def test_update_card_from_dict(app):
@@ -52,7 +52,7 @@ def test_update_card_from_dict(app):
     db.session.add(board)
     db.session.commit()
 
-    card = Card(message="Old message", board_id=board.board_id)
+    card = Card(message="Old message", board_id=board.id)
     db.session.add(card)
     db.session.commit()
 
