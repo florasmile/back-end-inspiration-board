@@ -1,7 +1,7 @@
 from flask import Blueprint, request, Response
 from app.models.board import Board
 from app.models.card import Card
-from app.routes.helpers import validate_model, create_model 
+from app.routes.helpers import validate_model, create_model
 
 from ..db import db
 
@@ -52,20 +52,21 @@ def delete_board(board_id):
 
     return Response(status=204, mimetype="application/json")
 
-
+#? need to figure out : should it update exist card or create a new one 
 @bp.post("/<board_id>/cards")
 def create_card_for_board(board_id):
     board = validate_model(Board, board_id)
-
     request_body = request.get_json()
+    card_ids = request_body.get("card_ids")
 
-    request_body["board_id"] = board.id
-    new_card = Card.from_dict(request_body)
-
-    db.session.add(new_card)
+    cards = []
+    for card_id in card_ids:
+        card = validate_model(Card, card_id)
+        cards.append(card)
+    board.cards = cards
     db.session.commit()
 
-    return {"card": new_card.to_dict()}, 201
+    return {"id": board.id, "task_ids": card_ids}
 
 
 @bp.get("/<board_id>/cards")

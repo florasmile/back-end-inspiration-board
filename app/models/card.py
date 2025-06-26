@@ -14,11 +14,11 @@ class Card(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     message: Mapped[str] = mapped_column(String(40), nullable=False)
     likes_count: Mapped[int] = mapped_column(Integer, default=0)
-    board_id: Mapped[int] = mapped_column(ForeignKey("board.id"), nullable=False)
+    board_id: Mapped[int] = mapped_column(ForeignKey("board.id"))
     board: Mapped["Board"] = relationship(back_populates="cards")
 
     @validates("message")
-    def message(self, key, message):
+    def validate_message(self, key, message):
         if len(message) > 40:
             raise ValueError("The message fild shoudn't be grater than 40 characters")
         return message
