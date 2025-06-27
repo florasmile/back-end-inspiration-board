@@ -58,7 +58,7 @@ def get_cards_by_board(board_id):
 
     return board.to_dict_with_cards()
 
-# get all boards with their cards
+# get all boards with their cards for debugging. DO NOT USE IN PRODUCTION
 @bp.get("/with-cards")
 def get_all_boards_with_cards():
     query = db.select(Board).order_by(Board.id)
@@ -83,9 +83,9 @@ def create_card_for_board(board_id):
 def reassign_cards_to_board(board_id):
     board = validate_model(Board, board_id)
     request_body = request.get_json()
-    card_ids = request_body.get("card_ids")
+    card_ids = request_body.get("card_ids", [])
 
-    if not card_ids or not isinstance(card_ids, list):
+    if not card_ids:
         return {"message": "Request must include a list of card_ids"}, 400
 
     updated_cards = []
@@ -105,19 +105,3 @@ def reassign_cards_to_board(board_id):
         "message": f"Moved {len(updated_cards)} card(s) to board {board.id}",
         "reassigned_cards": updated_cards
     }, 200
-
-
-#updating a single card 
-@bp.put("/<board_id>/cards/<card_id>")
-def update_card_on_board(board_id, card_id):
-    board = validate_model(Board, board_id)
-    card = validate_model(Card, card_id)
-
-    if card.board_id != board.id:
-        return {"message": f"Card {card.id} does not belong to Board {board.id}"}, 400
-
-    request_body = request.get_json()
-    card.update_from_dict(request_body)
-
-    db.session.commit()
-    return card.to_dict(), 200
