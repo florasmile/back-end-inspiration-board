@@ -40,42 +40,43 @@ def one_board(app):
     new_board = Board(title="Inspiration", owner="Ada")
     db.session.add(new_board)
     db.session.commit()
+    return new_board
 
 
 # One card (unlinked)
 @pytest.fixture
-def one_card(app):
-    new_card = Card(message="Believe in yourself", board_id=1)
+def one_card(app, one_board):
+    new_card = Card(message="Believe in yourself", board_id=one_board.id)
     db.session.add(new_card)
     db.session.commit()
+    return new_card
 
 
 # Three cards on same board
 @pytest.fixture
 def three_cards(app, one_board):
     db.session.add_all([
-        Card(message="Keep going", likes_count=0, board_id=1),
-        Card(message="You matter", likes_count=2, board_id=1),
-        Card(message="Stay curious", likes_count=1, board_id=1)
+        Card(message="Keep going", likes_count=0, board_id=one_board.id),
+        Card(message="You matter", likes_count=2, board_id=one_board.id),
+        Card(message="Stay curious", likes_count=1, board_id=one_board.id)
     ])
     db.session.commit()
 
 
 # One card with created_at set (for date tests)
 @pytest.fixture
-def dated_card(app):
-    card = Card(message="Timestamp test", board_id=1, created_at=datetime(2025, 6, 24, 12, 0, 0))
+def dated_card(app, one_board):
+    card = Card(message="Timestamp test", board_id=one_board.id, created_at=datetime(2025, 6, 24, 12, 0, 0))
     db.session.add(card)
     db.session.commit()
-
+    return card
 
 # One card belongs to one board (link manually)
 @pytest.fixture
 def one_card_belongs_to_one_board(app, one_board, one_card):
-    board = db.session.get(Board, 1)
-    card = db.session.get(Card, 1)
-    board.cards.append(card)
+    one_board.cards.append(one_card)
     db.session.commit()
+    return (one_board, one_card)
 
 
 @pytest.fixture
@@ -88,7 +89,4 @@ def one_board_one_card(app):
     db.session.add(card)
     db.session.commit()
 
-    return {"board_id": board.id}
-
-
-
+    return {"board_id": board.id, "card_id": card.id}
