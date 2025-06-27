@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 import os
 # Import models, blueprints, and anything else needed to set up the app or database
+from flasgger import Swagger
 from .models import board, card
 from .db import db, migrate
 from .routes.board_routes import bp as board_bp
@@ -16,8 +17,19 @@ def create_app(config=None):
 
     if config:
         app.config.update(config)
+    # Swagger UI info
+    # default APIDOCS route endpoint is /apidocs
+    # http://127.0.0.1:5000/apidocs/
+    
+    app.config['SWAGGER'] = {
+        "title": "Inspiration Board API",
+        "uiversion": 3,
+        "description": "API for managing boards and cards with likes and assignments"
+    }
 
     # Initialize app with SQLAlchemy db and Migrate
+    Swagger(app)
+
     db.init_app(app)
     migrate.init_app(app, db)
 
