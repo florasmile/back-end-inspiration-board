@@ -1,0 +1,25 @@
+tags:
+  - Cards
+summary: Like a card
+parameters:
+  - name: card_id
+    in: path
+    type: integer
+    required: true
+    description: ID of the card to like
+responses:
+  200:
+    description: Card liked
+    schema:
+      type: object
+      properties:
+        id:
+          type: integer
+        message:
+          type: string
+        likes_count:
+          type: integer
+        board_id:
+          type: integer
+  404:
+    description: Card not found

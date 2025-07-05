@@ -1,0 +1,25 @@
+tags:
+  - Cards
+summary: Update a card
+parameters:
+  - name: card_id
+    in: path
+    type: integer
+    required: true
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+        likes_count:
+          type: integer
+responses:
+  204:
+    description: Card updated
+  400:
+    description: Invalid request body
+  404:
+    description: Card not found

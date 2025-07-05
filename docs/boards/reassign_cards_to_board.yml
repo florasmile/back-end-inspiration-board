@@ -1,0 +1,43 @@
+tags:
+  - Boards
+summary: Reassign cards to board
+parameters:
+  - name: board_id
+    in: path
+    type: integer
+    required: true
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - card_ids
+      properties:
+        card_ids:
+          type: array
+          items:
+            type: integer
+responses:
+  200:
+    description: Cards reassigned
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+        reassigned_cards:
+          type: array
+          items:
+            type: object
+            properties:
+              card_id:
+                type: integer
+              from_board:
+                type: integer
+              to_board:
+                type: integer
+  400:
+    description: No card_ids provided
+  404:
+    description: Board or card not found

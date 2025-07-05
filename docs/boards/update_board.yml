@@ -1,0 +1,25 @@
+tags:
+  - Boards
+summary: Update a board
+parameters:
+  - name: board_id
+    in: path
+    type: integer
+    required: true
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        title:
+          type: string
+        owner:
+          type: string
+responses:
+  204:
+    description: Board updated
+  400:
+    description: Invalid data
+  404:
+    description: Board not found

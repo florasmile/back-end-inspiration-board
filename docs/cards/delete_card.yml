@@ -1,0 +1,13 @@
+tags:
+  - Cards
+summary: Delete a card
+parameters:
+  - name: card_id
+    in: path
+    type: integer
+    required: true
+responses:
+  204:
+    description: Card deleted
+  404:
+    description: Card not found

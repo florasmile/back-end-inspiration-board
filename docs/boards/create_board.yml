@@ -1,0 +1,24 @@
+tags:
+  - Boards
+summary: Create a new board
+consumes:
+  - application/json
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - title
+        - owner
+      properties:
+        title:
+          type: string
+        owner:
+          type: string
+responses:
+  201:
+    description: Board created successfully
+  400:
+    description: Missing or invalid fields

@@ -1,0 +1,25 @@
+tags:
+  - Cards
+summary: Get all cards
+parameters:
+  - name: message
+    in: query
+    type: string
+    required: false
+    description: Filter cards by message substring
+responses:
+  200:
+    description: A list of all cards
+    schema:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          message:
+            type: string
+          likes_count:
+            type: integer
+          board_id:
+            type: integer

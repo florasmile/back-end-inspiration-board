@@ -1,0 +1,23 @@
+tags:
+  - Boards
+summary: Get all boards
+parameters:
+  - name: title
+    in: query
+    type: string
+    required: false
+    description: Filter boards by title
+responses:
+  200:
+    description: List of boards
+    schema:
+      type: array
+      items:
+        type: object
+        properties:
+          board_id:
+            type: integer
+          title:
+            type: string
+          owner:
+            type: string

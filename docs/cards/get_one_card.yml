@@ -1,0 +1,28 @@
+tags:
+  - Cards
+summary: Get one card by ID
+parameters:
+  - name: card_id
+    in: path
+    type: integer
+    required: true
+    description: ID of the card to retrieve
+responses:
+  200:
+    description: Card data
+    schema:
+      type: object
+      properties:
+        cards:
+          type: object
+          properties:
+            id:
+              type: integer
+            message:
+              type: string
+            likes_count:
+              type: integer
+            board_id:
+              type: integer
+  404:
+    description: Card not found

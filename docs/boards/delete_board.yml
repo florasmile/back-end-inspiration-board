@@ -1,0 +1,13 @@
+tags:
+  - Boards
+summary: Delete a board
+parameters:
+  - name: board_id
+    in: path
+    type: integer
+    required: true
+responses:
+  204:
+    description: Board deleted
+  404:
+    description: Board not found

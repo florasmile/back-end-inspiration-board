@@ -1,0 +1,30 @@
+tags:
+  - Boards
+summary: ⚠️ [DEBUG ONLY] Get all boards with their cards
+description: ⚠️ This endpoint is for debugging only. **Do not use in production.**
+deprecated: true
+responses:
+  200:
+    description: Boards and cards
+    schema:
+      type: array
+      items:
+        type: object
+        properties:
+          board_id:
+            type: integer
+          title:
+            type: string
+          owner:
+            type: string
+          cards:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                message:
+                  type: string
+                likes_count:
+                  type: integer
