@@ -25,6 +25,25 @@ def test_put_card(client, one_card):
     # Assert
     assert response.status_code == 204
 
+# checks likes_count cannot be changed by PUT /cards/<card_id>
+def test_put_card_does_not_update_likes_count(client, one_card):
+    # Arrange
+    card_id = one_card.id
+    original_likes = one_card.likes_count
+
+    # Act
+    # Ignores likes_count update attempt
+    update_data = {"message": "Updated Message", "likes_count": 99}
+    response = client.put(f"/cards/{card_id}", json=update_data)
+    assert response.status_code == 204
+
+    # Assert
+    # Refetch and check likes_count to original number
+    response = client.get(f"/cards/{card_id}")
+    data = response.get_json()
+    assert data["cards"]["likes_count"] == original_likes
+
+
 # checks DELETE /cards/<card_id> deletes the card
 def test_delete_card(client, one_card):
     # Arrange

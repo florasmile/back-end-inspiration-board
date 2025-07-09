@@ -63,4 +63,4 @@ def test_update_card_from_dict(app):
 
     # Assert
     assert card.message == "New message"
-    assert card.likes_count == 5
+    assert card.likes_count == 0

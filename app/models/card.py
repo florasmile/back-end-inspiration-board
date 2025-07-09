@@ -44,5 +44,3 @@ class Card(db.Model):
     def update_from_dict(self, dict_data_card):
         if "message" in dict_data_card:
             self.message = dict_data_card["message"]
-        if "likes_count" in dict_data_card:
-            self.likes_count = dict_data_card["likes_count"]
